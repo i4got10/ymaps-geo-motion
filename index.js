@@ -26,7 +26,7 @@ function buildMap() {
 
         var controller = new AnimationController(canvasCar, {
             speedFactor: 10,
-            rotation: AnimationController.ROTATION_DEG,
+            rotationType: AnimationController.ROTATION_DEG,
             directions: AnimationController.DIRECTION_16
         });
 
