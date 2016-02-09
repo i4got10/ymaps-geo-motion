@@ -2,7 +2,9 @@ ymaps.ready(function () {
     setTimeout(buildMap, 0);
 });
 
-function runCarCanvasSimple(map, route) {
+var SPEED_MULTIPLIER = 10;
+
+function runCanvasSimple(map, route) {
     ymaps.modules.require([
             'taxi.animation.geoObject.canvas.simple',
             'taxi.animation.controller'
@@ -19,7 +21,7 @@ function runCarCanvasSimple(map, route) {
             });
 
             var controller = new AnimationController(canvasCar, {
-                speedFactor: 10
+                speedFactor: SPEED_MULTIPLIER
             });
 
             map.geoObjects.add(canvasCar);
@@ -31,7 +33,7 @@ function runCarCanvasSimple(map, route) {
         .done();
 }
 
-function runCarCanvasRotation(map, route) {
+function runCanvasRotation(map, route) {
     ymaps.modules.require([
             'taxi.animation.geoObject.canvas.rotation',
             'taxi.animation.controller'
@@ -48,7 +50,7 @@ function runCarCanvasRotation(map, route) {
             });
 
             var controller = new AnimationController(canvasCar, {
-                speedFactor: 10,
+                speedFactor: SPEED_MULTIPLIER,
                 rotationType: AnimationController.ROTATION_DEG
             });
 
@@ -66,7 +68,7 @@ function runCarCanvasRotation(map, route) {
         .done();
 }
 
-function runCarHtmlSimple(map, route) {
+function runHtmlSimple(map, route) {
     ymaps.modules.require([
             'taxi.animation.geoObject.html.simple',
             'taxi.animation.controller'
@@ -77,13 +79,12 @@ function runCarHtmlSimple(map, route) {
                     coordinates: [55.7571, 37.61681]
                 }
             }, {
-                html: '<div class="car"></div>',
-                // iconImageSize: [54, 54],
-                iconImageOffset: [-27, -27]
+                html: '<div class="car-simple"></div>',
+                iconOffset: [-8, -8]
             });
 
             var controller = new AnimationController(canvasCar, {
-                speedFactor: 10
+                speedFactor: SPEED_MULTIPLIER
             });
 
             map.geoObjects.add(canvasCar);
@@ -93,7 +94,7 @@ function runCarHtmlSimple(map, route) {
         .done();
 }
 
-function runCarHtmlRotation(map, route) {
+function runHtmlRotation(map, route) {
     ymaps.modules.require([
             'taxi.animation.geoObject.html.rotation',
             'taxi.animation.controller'
@@ -104,14 +105,43 @@ function runCarHtmlRotation(map, route) {
                     coordinates: [55.7571, 37.61681]
                 }
             }, {
-                html: '<div class="car"></div>',
+                html: '<div class="car-css3"></div>',
                 // iconImageSize: [54, 54],
                 iconOffset: [-27, -27]
             });
 
             var controller = new AnimationController(canvasCar, {
-                speedFactor: 10,
+                speedFactor: SPEED_MULTIPLIER,
                 rotationType: AnimationController.ROTATION_DEG
+            });
+
+            map.geoObjects.add(canvasCar);
+
+            return controller.moveOnRoute(route.getPaths());
+        })
+        .done();
+}
+
+function runHtmlSprite(map, route) {
+    ymaps.modules.require([
+            'taxi.animation.geoObject.html.sprite',
+            'taxi.animation.controller'
+        ], function (HtmlRotationGeoObject, AnimationController) {
+            var canvasCar = new HtmlRotationGeoObject({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [55.7571, 37.61681]
+                }
+            }, {
+                html: '<div class="car-sprite"></div>',
+                // iconImageSize: [54, 54],
+                iconOffset: [-27, -27]
+            });
+
+            var controller = new AnimationController(canvasCar, {
+                speedFactor: SPEED_MULTIPLIER,
+                rotationType: AnimationController.ROTATION_DIRECTIONS,
+                directions: AnimationController.DIRECTION_16
             });
 
             map.geoObjects.add(canvasCar);
@@ -164,9 +194,10 @@ function buildMap() {
             map.controls.add(button4, {float: 'right'});
             map.controls.add(button5, {float: 'right'});
 
-            button1.events.add('click', runCarCanvasSimple.bind(null, map, route));
-            button2.events.add('click', runCarCanvasRotation.bind(null, map, route));
-            button3.events.add('click', runCarHtmlSimple.bind(null, map, route));
-            button4.events.add('click', runCarHtmlRotation.bind(null, map, route));
+            button1.events.add('click', runCanvasSimple.bind(null, map, route));
+            button2.events.add('click', runCanvasRotation.bind(null, map, route));
+            button3.events.add('click', runHtmlSimple.bind(null, map, route));
+            button4.events.add('click', runHtmlRotation.bind(null, map, route));
+            button5.events.add('click', runHtmlSprite.bind(null, map, route));
         }).done();
 }
